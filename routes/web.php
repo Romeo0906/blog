@@ -11,6 +11,13 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+Route::get('/admin/login', 'Admin\AuthController@index')->name('auth.index');
+Route::post('/admin/login', 'Admin\AuthController@login')->name('auth.login');
+Route::get('/admin/logout', 'Admin\AuthController@logout')->name('auth.logout');
+
+Route::name('admin.')->middleware('auth:web')->namespace('Admin')->prefix('admin')->group(function () {
+    Route::get('/', 'AdminController@index')->name('index');
+    Route::resource('tags', 'TagsController');
+    Route::resource('channels', 'ChannelsController');
+    Route::resource('posts', 'PostsController');
 });

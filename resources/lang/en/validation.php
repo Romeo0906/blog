@@ -101,9 +101,35 @@ return [
     */
 
     'custom' => [
-        'attribute-name' => [
-            'rule-name' => 'custom-message',
+        'email' => [
+            'required' => '邮箱不能为空！',
+            'string' => '邮箱无效！'
         ],
+        'password' => [
+            'required' => '密码不能为空！',
+            'string' => '密码无效！'
+        ],
+        'tag' => [
+            'required' => '标签不能为空！',
+            'unique' => '该标签已存在！',
+            'max' => '标签不能超过 :max 个字符！'
+        ],
+        'channel' => [
+            'required' => '频道不能为空！',
+            'unique' => '该频道已存在！',
+            'max' => '频道不能超过 :max 个字符！'
+        ],
+        'title' => [
+            'required' => '标题不能为空！',
+            'unique' => '标题重复！',
+            'max' => '标题不能超过 :max 个字符！'
+        ],
+        'description' => [
+            'required' => '博文简介不能为空！'
+        ],
+        'content' => [
+            'required' => '博文内容不能为空！'
+        ]
     ],
 
     /*
@@ -117,6 +143,9 @@ return [
     |
     */
 
-    'attributes' => [],
+    'attributes' => [
+        'email' => '邮箱',
+        'password' => '密码'
+    ],
 
 ];

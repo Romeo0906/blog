@@ -24,8 +24,11 @@ class RouteServiceProvider extends ServiceProvider
     public function boot()
     {
         //
-
         parent::boot();
+
+        Route::model('post', \App\Models\Post::class);
+        Route::model('tag', \App\Models\Tag::class);
+        Route::model('channel', \App\Models\Channel::class);
     }
 
     /**
@@ -35,11 +38,27 @@ class RouteServiceProvider extends ServiceProvider
      */
     public function map()
     {
+        $this->mapOpenRoutes();
+
         $this->mapApiRoutes();
 
         $this->mapWebRoutes();
 
         //
+    }
+
+    /**
+     * Define the "open" routes for the application.
+     *
+     * These routes are open to the public.
+     *
+     * @return void
+     */
+    protected function mapOpenRoutes()
+    {
+        Route::middleware('open')
+            ->namespace($this->namespace)
+            ->group(base_path('routes/open.php'));
     }
 
     /**

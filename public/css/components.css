@@ -1,0 +1,67 @@
+.post-card {
+    background-size: 100% 100%;
+    border-radius: inherit;
+    height: 12em;
+    padding: 2em;
+    color: white;
+}
+
+.badge {
+    display: inline-block;
+    padding: .25em .4em;
+    font-size: 75%;
+    font-weight: 700;
+    line-height: 1;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: .25rem;
+}
+
+.badge-primary {
+    color: #fff;
+    background-color: #49bf9d;
+}
+
+.badge-outline-primary {
+    color: #fff;
+    color: rgba(255, 255, 255, 0.4);
+    background-color: transparent;
+    background-image: none;
+    border: 1px solid;
+    border-color: rgba(255, 255, 255, 0.4);
+}
+
+.btn:not(:disabled):not(.disabled) {
+    cursor: pointer;
+}
+
+.badge-outline-primary:hover {
+    color: #49bf9d;
+    border-color: #49bf9d;
+}
+
+ul.error {
+    cursor: default;
+    list-style: none;
+    padding-left: 0;
+    color: #ff9800; !important
+}
+
+.clear {
+    clear: both;
+}
+
+.blank {
+    height: 1.5em;
+    width: 1.5em;
+}
+
+@media (min-width: 992px) {
+    .col-lg-3-5 {
+        -webkit-box-flex: 0;
+        -ms-flex: 0 0 30%;
+        flex: 0 0 30%;
+        max-width: 30%;
+    }
+}
