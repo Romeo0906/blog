@@ -13,7 +13,7 @@ class PostsController extends Controller
     //
     public function index()
     {
-        $posts = Post::orderByDesc('created_at')->simplePaginate(8);
+        $posts = Post::orderByDesc('created_at')->simplePaginate(6);
         return view('home.post.list', ['posts' => $posts]);
     }
 
@@ -32,14 +32,16 @@ class PostsController extends Controller
         $posts = Post::with(['channel', 'tag'])
                     ->where('channel', $channel->id)
                     ->orderByDesc('created_at')
-                    ->simplePaginate(8);
+                    ->simplePaginate(6);
         return view('home.post.list', ['posts' => $posts, 'current_channel' => $channel->id]);
     }
 
     public function loadByTag(Tag $tag)
     {
         $postIds = $tag->postId()->pluck('post_id');
-        $posts = Post::whereIn('id', $postIds)->orderByDesc('id')->simplePaginate(8);
+        $posts = Post::whereIn('id', $postIds)
+                    ->orderByDesc('id')
+                    ->simplePaginate(6);
         return view('home.post.list', ['posts' => $posts, 'current_tag' => $tag->id]);
     }
 }

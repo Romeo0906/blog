@@ -5,10 +5,10 @@
             <article class="6u 12u$(xsmall) work-item">
                 <a href="{{ route('home.posts.show', ['id' => $post->id]) }}" class="image fit thumb">
                     <div class="post-card" style="background-image: url('/images/thumbs/0{{ $post->id % 6 + 1 }}.jpg')">
-                        <div style="height: 75%">
+                        <div style="height: 90%">
                             <p>{{ $post->description }}</p>
                         </div>
-                        <div style="height: 25%">
+                        <div style="height: 10%">
                             <p>{{ date('m 月 d 日', strtotime($post->created_at)) }}</p>
                         </div>
                     </div>
@@ -17,7 +17,4 @@
             </article>
         @endforeach
     </div>
-    {{--<ul class="actions">--}}
-        {{--<li><a href="#" class="button">查看更多</a></li>--}}
-    {{--</ul>--}}
 </section>
