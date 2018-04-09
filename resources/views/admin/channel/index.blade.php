@@ -14,7 +14,7 @@
             <tbody>
                 @foreach($channels as $channel)
                     <tr>
-                        <th scope="row"><span class="icon fa-minus-circle text-danger"></span></th>
+                        <th scope="row"><span class="icon fa-trash-o text-danger"></span></th>
                         <td>{{ $channel->channel }}</td>
                         <td>{{ $channel->updated_at }}</td>
                         <td>{{ $channel->created_at }}</td>

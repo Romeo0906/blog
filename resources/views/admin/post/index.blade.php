@@ -16,7 +16,7 @@
             <tbody>
                 @foreach($posts as $post)
                     <tr>
-                        <th width="5%" scope="row"><span class="icon fa-minus-circle text-danger"></span></th>
+                        <th width="5%" scope="row"><span class="icon fa-trash-o text-danger"></span></th>
                         <td><a class="no-border" href="{{ route('admin.posts.show', ['post' => $post->id]) }}">{{ $post->title }}</a></td>
                         <td width="10%">{{ $post->channel()->value('channel') }}</td>
                         <td width="25%">

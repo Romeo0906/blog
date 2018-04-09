@@ -14,7 +14,7 @@
             <tbody>
                 @foreach($tags as $tag)
                     <tr>
-                        <th scope="row"><span class="icon fa-minus-circle text-danger"></span></th>
+                        <th scope="row"><span class="icon fa-trash-o text-danger"></span></th>
                         <td>{{ $tag->tag }}</td>
                         <td>{{ $tag->updated_at }}</td>
                         <td>{{ $tag->created_at }}</td>
