@@ -1,6 +1,6 @@
 @extends('layout')
 
-@section('title', 'Home Page')
+@section('title', 'ROMEO')
 
 @section('header')
     <div class="inner">
