@@ -7,8 +7,8 @@
                 <div class="8u 12u$(small)">
                     <h2>创建一个新标签</h2>
                     <p>标签可以用来标记博文，并可以作为关键字搜索被标记的博文。<br>已经存在的标签，不能重复添加哦</p>
-                    @foreach($tags as $tag)
-                        <span class="badge badge-primary">{{ $tag->tag }}</span>
+                    @foreach($all_tags as $tag)
+                        <span class="badge badge-primary mr-1">{{ $tag->tag }}</span>
                     @endforeach
                 </div>
             </div>

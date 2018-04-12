@@ -38,7 +38,7 @@ class PostsController extends Controller
 
     public function loadByTag(Tag $tag)
     {
-        $postIds = $tag->postId()->pluck('post_id');
+        $postIds = $tag->postTag()->pluck('post_id');
         $posts = Post::whereIn('id', $postIds)
                     ->orderByDesc('id')
                     ->simplePaginate(6);

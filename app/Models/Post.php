@@ -16,4 +16,9 @@ class Post extends Model
     {
         return $this->hasOne('App\Models\Channel', 'id', 'channel');
     }
+
+    public function postTag()
+    {
+        return $this->hasMany('App\Models\PostTag', 'post_id', 'id');
+    }
 }

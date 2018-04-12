@@ -5,10 +5,13 @@
         <section id="two">
             <div class="row">
                 <div class="8u 12u$(small)">
-                    <h2>创建一个新频道</h2>
+                    <h2>修改频道名称</h2>
                     <p>频道可以对博文分类，并可以作为关键字搜索该频道下的博文。<br>已经存在的频道，不能重复添加哦</p>
-                    @foreach($all_channels as $channel)
-                        <span class="text-active mr-1">{{ $channel->channel }}</span>
+                    @foreach($all_channels as $c)
+                        @if($c->id == $channel->id)
+                            @continue
+                        @endif
+                        <span class="text-active mr-1">{{ $c->channel }}</span>
                     @endforeach
                 </div>
             </div>
@@ -23,14 +26,15 @@
                             @endforeach
                         </ul>
                     @endif
-                    <form method="post" action="{{ route('admin.channels.store') }}">
+                    <form method="post" action="{{ route('admin.channels.update', ['channel' => $channel->id]) }}">
+                        @method('put')
                         @csrf
                         <div class="row uniform 50%">
-                            <div class="12u$"><input type="text" name="channel" id="channel" placeholder="频道" /></div>
+                            <div class="12u$"><input type="text" name="channel" id="channel" value="{{ $channel->channel }}" /></div>
                         </div>
                         <br>
                         <ul class="actions">
-                            <li><input type="submit" value="创建" /></li>
+                            <li><input type="submit" value="修改" /></li>
                         </ul>
                     </form>
                 </div>

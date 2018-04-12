@@ -7,6 +7,7 @@ use App\Models\PostTag;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 
 class PostsController extends Controller
 {
@@ -86,34 +87,78 @@ class PostsController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param  Post  $post
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Post $post)
     {
         //
+        return view('admin.post.edit', ['post' => $post]);
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  Post  $post
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Post $post)
     {
         //
+        $request->validate([
+            'title' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('posts')->ignore($post->id)
+            ],
+            'description' => ['required', 'string'],
+            'channel' => ['required'],
+            'tag' => ['required', 'array'],
+            'content' => ['required', 'string']
+        ]);
+
+        $post->title = $request->title;
+        $post->description = $request->description;
+        $post->channel = $request->channel;
+        $post->content = $request->input('content');
+        $post->save();
+
+        $post->postTag()->delete();
+
+        foreach ($request->tag as $tag) {
+            $post_tag = new PostTag();
+            $post_tag->post_id = $post->id;
+            $post_tag->tag_id = $tag;
+            $post_tag->save();
+        }
+
+        return redirect()
+            ->route('admin.posts.index')
+            ->withErrors('博文修改成功！');
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  Post  $post
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Post $post)
     {
         //
+        try {
+            $post->postTag()->delete();
+            $post->delete();
+        } catch (\Throwable $e) {
+            return redirect()
+                    ->route('admin.posts.index')
+                    ->withErrors('删除失败！' . $e->getMessage() . "。");
+        }
+
+        return redirect()
+                ->route('admin.posts.index')
+                ->withErrors('删除成功！');
     }
 }

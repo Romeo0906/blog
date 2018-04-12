@@ -1,35 +1,51 @@
 @extends('admin.layout')
 
+@section('head')
+    <script src="{{ asset('js/extra.js') }}"></script>
+@endsection
+
 @section('content')
     <div id="main">
-        <table class="table table-hover">
+        @if(isset($errors))
+            <ul class="error">
+                @foreach($errors->all() as $error)
+                    <li>{{ $error }}<li/>
+                @endforeach
+            </ul>
+        @endif
+        <table class="table table-hover text-center">
             <thead>
                 <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">标题</th>
-                    <th scope="col">频道</th>
-                    <th scope="col">标签</th>
-                    <th scope="col">更新时间</th>
-                    <th scope="col">创建时间</th>
+                    <th class="text-center w-40" scope="col">标题</th>
+                    <th class="text-center w-10" scope="col">频道</th>
+                    <th class="text-center w-10" scope="col">浏览</th>
+                    <th class="text-center w-20" scope="col">更新/创建时间</th>
+                    <th class="text-center w-10" scope="col">修改</th>
+                    <th class="text-center w-10" scope="col">删除</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach($posts as $post)
                     <tr>
-                        <th width="5%" scope="row"><span class="icon fa-trash-o text-danger"></span></th>
-                        <td><a class="no-border" href="{{ route('admin.posts.show', ['post' => $post->id]) }}">{{ $post->title }}</a></td>
-                        <td width="10%">{{ $post->channel()->value('channel') }}</td>
-                        <td width="25%">
-                            @foreach($post->tag as $tag)
-                                <span class="badge badge-primary" style="font-size: 70%;">{{ $tag->tag}}</span>
-                            @endforeach
-                        </td>
-                        <td width="15%">{{ date('Y-m-d', strtotime($post->updated_at)) }}</td>
-                        <td width="15%">{{ date('Y-m-d', strtotime($post->updated_at)) }}</td>
+                        <td class="text-left">{{ $post->title }}</td>
+                        <td>{{ $post->channel()->value('channel') }}</td>
+                        <td>{{ $post->view }}</td>
+                        <td>{{ date('m-d', strtotime($post->updated_at)) . ' / ' . date('m-d', strtotime($post->updated_at)) }}</td>
+                        <th class="text-center" scope="row">
+                            <a class="no-border" href="{{ route('admin.posts.edit', ['post' => $post->id]) }}"><span class="icon fa-pencil-square-o text-success pointer"></span></a>
+                        </th>
+                        <th class="text-center" scope="row">
+                            <span onclick="triggerDeleteForm('{{ route('admin.posts.destroy', ['id' => $post->id]) }}')" class="icon fa-trash-o text-danger pointer"></span>
+                        </th>
                     </tr>
                 @endforeach
             </tbody>
         </table>
         {{ $posts->links('components.pagination') }}
     </div>
+    <form id="delete_form" method="post">
+        @method('delete')
+        @csrf
+        <input type="hidden" name="id" id="post_id">
+    </form>
 @endsection

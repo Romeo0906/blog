@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Models\Tag;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Validation\Rule;
 
 class TagsController extends Controller
 {
@@ -28,8 +29,7 @@ class TagsController extends Controller
     public function create()
     {
         //
-        $tags = Tag::all();
-        return view('admin.tag.create', ['tags' => $tags]);
+        return view('admin.tag.create');
     }
 
     /**
@@ -56,25 +56,63 @@ class TagsController extends Controller
     }
 
     /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  Tag  $tag
+     * @return \Illuminate\Http\Response
+     */
+    public function edit(Tag $tag)
+    {
+        //
+        return view('admin.tag.edit', ['tag' => $tag]);
+    }
+
+    /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  Tag  $tag
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Tag $tag)
     {
         //
+        $request->validate([
+            'tag' => [
+                'required',
+                'max:25',
+                Rule::unique('tags')->ignore($tag->id)
+            ]
+        ]);
+
+        $tag->tag = $request->tag;
+        $tag->save();
+
+        return redirect()
+            ->route('admin.tags.index')
+            ->withErrors('标签 ' . $tag->tag . ' 修改成功！');
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  Tag  $tag
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Tag $tag)
     {
         //
+        try {
+            $tag->postTag()->delete();
+            $tag->delete();
+        } catch (\Throwable $e) {
+            return redirect()
+                    ->route('admin.tags.index')
+                    ->withErrors('删除失败！' . $e->getMessage() . "。");
+        }
+
+        return redirect()
+                ->route('admin.tags.index')
+                ->withErrors('删除成功！');
     }
 }

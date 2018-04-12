@@ -23,6 +23,11 @@
     <!--[if lte IE 8]><script type="application/javascript" src="{{ asset('js/ie/html5shiv.js') }}"></script><![endif]-->
     <!--[if lte IE 8]><link rel="stylesheet" href="{{ asset('css/ie8.css') }}" /><![endif]-->
 
+    <!-- Scripts -->
+    <script src="{{ asset('js/jquery.min.js') }}"></script>
+    @section('head')
+    @show
+
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-106961629-1"></script>
     <script>
@@ -57,11 +62,11 @@
     </footer>
 
     <!-- Scripts -->
-    <script src="{{ asset('js/jquery.min.js') }}"></script>
     <script src="{{ asset('js/skel.min.js') }}"></script>
     <script src="{{ asset('js/util.js') }}"></script>
     <!--[if lte IE 8]><script src="{{ asset('js/ie/respond.min.js') }}"></script><![endif]-->
     <script src="{{ asset('js/main.js') }}"></script>
-
+    @section('foot')
+    @show
 </body>
 </html>
