@@ -16,6 +16,9 @@
             <li><a class="no-border" href="{{ route('admin.posts.index') }}">博文</a></li>
             <li><a class="no-border" href="{{ route('admin.channels.index') }}">频道</a></li>
             <li><a class="no-border" href="{{ route('admin.tags.index') }}">标签</a></li>
+        </ul>
+        <ul class="channel">
+            <li><a class="no-border" href="{{ route('admin.settings') }}"><span class="fa fa-cog"></span></a></li>
             <li><a class="no-border" href="{{ route('auth.logout') }}"><span class="fa fa-sign-out"></span></a></li>
         </ul>
     </div>

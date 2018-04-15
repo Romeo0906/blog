@@ -15,6 +15,6 @@ return [
 
 //    'failed' => 'These credentials do not match our records.',
 //    'throttle' => 'Too many login attempts. Please try again in :seconds seconds.',
-    'failed' => '邮箱或密码输入错误！',
+    'failed' => '您的输入有误！',
     'throttle' => '登录频繁失败，请 :seconds 秒后再试！'
 ];

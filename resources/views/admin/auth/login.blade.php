@@ -25,6 +25,7 @@
                         <div class="row uniform 50%">
                             <div class="12u$"><input type="text" name="email" id="email" placeholder="邮箱" /></div>
                             <div class="12u$"><input type="password" name="password" id="password" placeholder="密码" /></div>
+                            <div class="12u$"><input type="text" name="token" id="token" placeholder="Authy Token" /></div>
                         </div>
                         <br>
                         <ul class="actions">

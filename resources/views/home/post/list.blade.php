@@ -1,7 +1,5 @@
 @extends('home.layout')
 
-@section('title', 'Home page')
-
 @section('content')
     <div id="main">
         @if(count($posts) > 0)

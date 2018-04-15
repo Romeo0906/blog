@@ -2,6 +2,19 @@
 
 @section('title', 'ROMEO')
 
+@section('head')
+    @if(env('APP_ENV') == 'production')
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-106961629-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-106961629-1');
+    </script>
+    @endif
+@endsection
+
 @section('header')
     <div class="inner">
         <a href="{{ route('home.index') }}" class="image avatar"><img src="{{ asset('images/avatar.jpg') }}" alt="" /></a>

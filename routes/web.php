@@ -17,6 +17,8 @@ Route::get('/admin/logout', 'Admin\AuthController@logout')->name('auth.logout');
 
 Route::name('admin.')->middleware('auth:web')->namespace('Admin')->prefix('admin')->group(function () {
     Route::get('/', 'AdminController@index')->name('index');
+    Route::get('/settings','AdminController@setting')->name('settings');
+    Route::post('/authy', 'AdminController@authy')->name('authy');
     Route::resource('tags', 'TagsController');
     Route::resource('channels', 'ChannelsController');
     Route::resource('posts', 'PostsController');

@@ -109,6 +109,10 @@ return [
             'required' => '密码不能为空！',
             'string' => '密码无效！'
         ],
+        'token' => [
+            'required' => '请输入 Authy Token！',
+            'numeric' => 'Authy Token 无效！'
+        ],
         'tag' => [
             'required' => '标签不能为空！',
             'unique' => '该标签已存在！',
