@@ -22,6 +22,7 @@ class CreateUsersTable extends Migration
             $table->string('country_code')->default('86');
             $table->string('authy_id')->nullable();
             $table->boolean('verified')->default(false);
+            $table->boolean('authy_enabled')->default(false);
             $table->rememberToken();
             $table->timestamps();
         });

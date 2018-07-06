@@ -110,8 +110,8 @@ return [
             'string' => '密码无效！'
         ],
         'token' => [
-            'required' => '请输入 Authy Token！',
-            'numeric' => 'Authy Token 无效！'
+            'required' => '请输入两步验证的 Token！',
+            'numeric' => 'Token 值不合法！'
         ],
         'tag' => [
             'required' => '标签不能为空！',

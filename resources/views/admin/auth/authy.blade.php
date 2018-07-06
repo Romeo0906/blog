@@ -20,15 +20,15 @@
                             @endforeach
                         </ul>
                     @endif
-                    <form method="post" action="{{ route('auth.login') }}">
+                    <form method="post" action="{{ route('auth.tfa') }}">
+                        <input type="hidden" name="user" value="{{ $user }}">
                         @csrf
                         <div class="row uniform 50%">
-                            <div class="12u$"><input type="text" name="email" id="email" placeholder="邮箱" /></div>
-                            <div class="12u$"><input type="password" name="password" id="password" placeholder="密码" /></div>
+                            <div class="12u$"><input type="text" name="token" id="token" placeholder="Authy Token" /></div>
                         </div>
-                        <br><br>
+                        <br>
                         <ul class="actions">
-                            <li><input type="submit" value="登录" /></li>
+                            <li><input type="submit" value="验证" /></li>
                         </ul>
                     </form>
                 </div>

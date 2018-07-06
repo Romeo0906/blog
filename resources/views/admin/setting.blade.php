@@ -9,36 +9,29 @@
                 @endforeach
             </ul>
         @endif
-        <form action="{{ route('admin.authy') }}" method="post">
-            @csrf
-            @if($admin->authy_id === null)
-                <input type="hidden" name="action" value="on">
-                <div class="form-group">
-                    <label for="switch">
-                        Two Factor Auth 已经关闭
-                    </label>
-                    <input type="submit" value="启用">
-                </div>
-            @elseif($admin->verified === 0)
-                <input type="hidden" name="action" value="verify">
-                <div class="form-group">
-                    <label for="switch">
-                        Two Factor Auth 未验证
-                    </label>
-                    <input class="w-50" type="text" name="token" placeholder="请输入 Authy 的 Token">
-                </div>
-                <div class="form-group">
-                    <input type="submit" value="验证">
-                </div>
-            @else
-                <input type="hidden" name="action" value="off">
+        @if($admin->authy_enabled)
+            <form action="{{ route('admin.tfa', ['status' => 'off']) }}" method="post">
+                @csrf
                 <div class="form-group">
                     <label for="switch">
                         Two Factor Auth 已经启用
                     </label>
                     <input type="submit" value="关闭">
                 </div>
-            @endif
-        </form>
+            </form>
+        @else
+            <form action="{{ route('admin.tfa', ['status' => 'on']) }}" method="post">
+                @csrf
+                <div class="form-group">
+                    <label for="switch">
+                        Two Factor Auth 已经关闭
+                    </label>
+                    <input class="w-50" type="text" name="token" placeholder="请输入 Token">
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="启用">
+                </div>
+            </form>
+        @endif
     </div>
 @endsection

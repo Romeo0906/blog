@@ -19,45 +19,66 @@ class AuthController extends Controller
 
     protected $authyApi;
 
-
+    /**
+     * AuthController constructor.
+     * @param AuthyApi $authyApi
+     */
     public function __construct(AuthyApi $authyApi)
     {
         $this->authyApi = $authyApi;
         $this->middleware('guest')->except('logout');
     }
 
+    /**
+     * Log in page
+     *
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function index()
     {
         return view('admin.auth.login');
     }
 
+    /**
+     * Log in action
+     *
+     * @param Request $request
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\Response|\Illuminate\View\View|\Symfony\Component\HttpFoundation\Response|void
+     * @throws \Illuminate\Validation\ValidationException
+     */
     public function login(Request $request)
     {
+        $this->unauthorize($request->input($this->username()));
+
         $this->validateLogin($request);
 
-        // If the class is using the ThrottlesLogins trait, we can automatically throttle
-        // the login attempts for this application. We'll key this by the username and
-        // the IP address of the client making these requests into this application.
         if ($this->hasTooManyLoginAttempts($request)) {
             $this->fireLockoutEvent($request);
-
             return $this->sendLockoutResponse($request);
         }
 
-        if ($this->verify($request) && $this->attemptLogin($request)) {
-            return $this->sendLoginResponse($request);
+        if (!$this->attemptLogin($request)) {
+            $this->incrementLoginAttempts($request);
+            return $this->sendFailedLoginResponse($request);
         }
 
-        // If the login attempt was unsuccessful we will increment the number of attempts
-        // to login and redirect the user back to the login form. Of course, when this
-        // user surpasses their maximum number of attempts they will get locked out.
-        $this->incrementLoginAttempts($request);
+        if ($this->twoFactorAuthEnabled($request->only($this->username()))) {
+            return view('admin.auth.authy', ['user' => $request->input($this->username())]);
+        }
 
-        return $this->sendFailedLoginResponse($request);
+        return $this->sendLoginResponse($request);
     }
 
+    /**
+     * Log out action
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function logout(Request $request)
     {
+        $this->unauthorize($this->guard()->user()->{$this->username()});
+
         $this->guard()->logout();
 
         $request->session()->invalidate();
@@ -65,45 +86,71 @@ class AuthController extends Controller
         return redirect()->route('auth.index');
     }
 
-    public function verify(Request $request)
+    /**
+     * Two factor auth validate action
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\Response|\Symfony\Component\HttpFoundation\Response
+     * @throws \Illuminate\Validation\ValidationException
+     */
+    public function twoFactorAuth(Request $request)
     {
-        $authy_id = $this->authyId($request);
+        $authy_id = $this->getAuthyId($request->input('user'));
 
-        if ($authy_id === null ) {
-            return true;
+        if ($this->authyApi->verifyToken($authy_id, $request->token)->ok()) {
+            $this->authorize($request->input('user'));
+            return $this->sendLoginResponse($request);
         }
 
-        $verify = $this->authyApi->verifyToken($authy_id, $request->token);
+        $this->incrementLoginAttempts($request);
+        return $this->sendFailedLoginResponse($request);
+    }
 
-        if ($verify->ok()) {
+    /**
+     * Two factor auth enabled or not
+     *
+     * @param $username
+     * @return bool
+     */
+    protected function twoFactorAuthEnabled($username)
+    {
+        if (User::where($this->username(), $username)->value('authy_enabled') == 1) {
             return true;
         }
 
         return false;
     }
 
-    protected function validateLogin(Request $request)
+    /**
+     * Get user's authy id by user name
+     *
+     * @param $username
+     * @return mixed
+     */
+    protected function getAuthyId($username)
     {
-        if ($this->authyId($request) === null) {
-            $this->validate($request, [
-                $this->username() => 'required|string',
-                'password' => 'required|string',
-            ]);
-        } else {
-            $this->validate($request, [
-                $this->username() => 'required|string',
-                'password' => 'required|string',
-                'token' => 'required|numeric',
-            ]);
-        }
+        return User::where($this->username(), $username)->value('authy_id');
     }
 
-    protected function authyId(Request $request)
+    /**
+     * Authorize user to log in (add two factor auth credential)
+     *
+     * @param $username
+     * @return mixed
+     */
+    protected function authorize($username)
     {
-        if (User::where($this->username(), $request->only($this->username()))->value('verified')) {
-            return User::where($this->username(), $request->only($this->username()))->value('authy_id');
-        }
+        return User::where($this->username(), $username)->update(['verified' => 1]);
+    }
 
-        return null;
+    /**
+     * Unauthorize user to log out (remove two factor auth credential)
+     *
+     * @param $username
+     * @return mixed
+     */
+    protected function unauthorize($username)
+    {
+        return User::where($this->username(), $username)->update(['verified' => 0]);
     }
 }
