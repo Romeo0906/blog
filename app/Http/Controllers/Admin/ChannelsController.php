@@ -17,7 +17,6 @@ class ChannelsController extends Controller
      */
     public function index()
     {
-        //
         $channels = Channel::all();
         return view('admin.channel.index', ['channels' => $channels]);
     }
@@ -29,7 +28,6 @@ class ChannelsController extends Controller
      */
     public function create()
     {
-        //
         return view('admin.channel.create');
     }
 
@@ -41,7 +39,6 @@ class ChannelsController extends Controller
      */
     public function store(Request $request)
     {
-        //
         $request->validate([
            'channel' => 'required|unique:channels,channel|max:25'
         ]);
@@ -56,17 +53,6 @@ class ChannelsController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
      * Show the form for editing the specified resource.
      *
      * @param  Channel  $channel
@@ -74,7 +60,6 @@ class ChannelsController extends Controller
      */
     public function edit(Channel $channel)
     {
-        //
         return view('admin.channel.edit', ['channel' => $channel]);
     }
 
@@ -87,7 +72,6 @@ class ChannelsController extends Controller
      */
     public function update(Request $request, Channel $channel)
     {
-        //
         $request->validate([
             'channel' => [
                'required',
@@ -112,7 +96,6 @@ class ChannelsController extends Controller
      */
     public function destroy(Channel $channel)
     {
-        //
         try {
             if ($channel->post()->count() > 0) {
                 throw new Exception('该频道下仍有博文，不能删除');
