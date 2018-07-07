@@ -28,4 +28,14 @@ class TwoFactorAuthGuard extends SessionGuard
 
         return $user;
     }
+
+    /**
+     * Get user unauthorized by two factor auth
+     *
+     * @return \Illuminate\Contracts\Auth\Authenticatable|null
+     */
+    public function unauthorizedUser()
+    {
+        return parent::user();
+    }
 }

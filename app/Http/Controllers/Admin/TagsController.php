@@ -16,7 +16,6 @@ class TagsController extends Controller
      */
     public function index()
     {
-        //
         $tags = Tag::all();
         return view('admin.tag.index', ['tags' => $tags]);
     }
@@ -28,7 +27,6 @@ class TagsController extends Controller
      */
     public function create()
     {
-        //
         return view('admin.tag.create');
     }
 
@@ -40,7 +38,6 @@ class TagsController extends Controller
      */
     public function store(Request $request)
     {
-        //
         $request->validate([
             'tag' => 'required|unique:tags,tag|max:25',
         ]);
@@ -63,7 +60,6 @@ class TagsController extends Controller
      */
     public function edit(Tag $tag)
     {
-        //
         return view('admin.tag.edit', ['tag' => $tag]);
     }
 
@@ -76,7 +72,6 @@ class TagsController extends Controller
      */
     public function update(Request $request, Tag $tag)
     {
-        //
         $request->validate([
             'tag' => [
                 'required',
@@ -101,7 +96,6 @@ class TagsController extends Controller
      */
     public function destroy(Tag $tag)
     {
-        //
         try {
             $tag->postTag()->delete();
             $tag->delete();

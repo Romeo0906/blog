@@ -4,28 +4,32 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
-use Authy\AuthyApi;
+use Authy\AuthyApi as AuthClient;
 use Illuminate\Http\Request;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
-    //
     use AuthenticatesUsers;
 
+    // Lock time when logging in fails exceeds to threshold
     protected $decayMinutes = 5;
 
+    // Where to redirected to after log in
     protected $redirectTo = '/admin';
 
-    protected $authyApi;
+    // Client of Authy
+    protected $authClient;
 
     /**
      * AuthController constructor.
-     * @param AuthyApi $authyApi
+     * @param AuthClient $authClient
      */
-    public function __construct(AuthyApi $authyApi)
+    public function __construct(AuthClient $authClient)
     {
-        $this->authyApi = $authyApi;
+        $this->authClient = $authClient;
+        // Redirect if authenticated, logout not included
         $this->middleware('guest')->except('logout');
     }
 
@@ -40,15 +44,13 @@ class AuthController extends Controller
     }
 
     /**
-     * Log in action
-     *
      * @param Request $request
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\Response|\Illuminate\View\View|\Symfony\Component\HttpFoundation\Response|void
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\Response|\Illuminate\View\View|\Symfony\Component\HttpFoundation\Response
      * @throws \Illuminate\Validation\ValidationException
      */
     public function login(Request $request)
     {
-        $this->unauthorize($request->input($this->username()));
+        $this->revocation($request->input($this->username()));
 
         $this->validateLogin($request);
 
@@ -63,47 +65,37 @@ class AuthController extends Controller
         }
 
         if ($this->twoFactorAuthEnabled($request->only($this->username()))) {
-            return view('admin.auth.authy', ['user' => $request->input($this->username())]);
+            return view('admin.auth.tfa');
         }
 
         return $this->sendLoginResponse($request);
     }
 
     /**
-     * Log out action
+     * Two factor auth
      *
      * @param Request $request
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    public function logout(Request $request)
-    {
-        $this->unauthorize($this->guard()->user()->{$this->username()});
-
-        $this->guard()->logout();
-
-        $request->session()->invalidate();
-
-        return redirect()->route('auth.index');
-    }
-
-    /**
-     * Two factor auth validate action
-     *
-     * @param Request $request
-     * @return \Illuminate\Http\Response|\Symfony\Component\HttpFoundation\Response
-     * @throws \Illuminate\Validation\ValidationException
+     * @return $this|\Illuminate\Http\RedirectResponse|\Illuminate\Http\Response
      */
     public function twoFactorAuth(Request $request)
     {
-        $authy_id = $this->getAuthyId($request->input('user'));
+        $validator = Validator::make($request->all(), ['token' => 'required|numeric|digits_between:6,10']);
 
-        if ($this->authyApi->verifyToken($authy_id, $request->token)->ok()) {
-            $this->authorize($request->input('user'));
+        if ($validator->fails()) {
+            return view('admin.auth.tfa')->withErrors($validator->errors());
+        }
+
+        if (!$user = $this->guard()->unauthorizedUser()) {
+            return redirect()->route('auth.index');
+        }
+
+        if ($this->authClient->verifyToken($user->authy_id, $request->token)->ok()) {
+            $this->authorize($user->{$this->username()});
             return $this->sendLoginResponse($request);
         }
 
         $this->incrementLoginAttempts($request);
-        return $this->sendFailedLoginResponse($request);
+        return view('admin.auth.tfa')->withErrors(['Token 值输入有误！']);
     }
 
     /**
@@ -114,11 +106,7 @@ class AuthController extends Controller
      */
     protected function twoFactorAuthEnabled($username)
     {
-        if (User::where($this->username(), $username)->value('authy_enabled') == 1) {
-            return true;
-        }
-
-        return false;
+        return User::where($this->username(), $username)->value('authy_enabled') == 1;
     }
 
     /**
@@ -149,8 +137,35 @@ class AuthController extends Controller
      * @param $username
      * @return mixed
      */
-    protected function unauthorize($username)
+    protected function revocation($username)
     {
         return User::where($this->username(), $username)->update(['verified' => 0]);
+    }
+
+    /**
+     * Log out action
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function logout(Request $request)
+    {
+        $this->revocation($this->guard()->user()->{$this->username()});
+
+        $this->guard()->logout();
+
+        $request->session()->invalidate();
+
+        return redirect()->route('auth.index');
+    }
+
+    /**
+     * Redirect to index
+     *
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function redirectToIndex()
+    {
+        return redirect()->route('auth.index');
     }
 }

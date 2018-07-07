@@ -27,7 +27,7 @@ class AdminController extends Controller
     }
 
     /**
-     * User settings
+     * User settings page
      *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */

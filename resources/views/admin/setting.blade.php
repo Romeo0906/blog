@@ -16,6 +16,9 @@
                     <label for="switch">
                         Two Factor Auth 已经启用
                     </label>
+                    <input class="w-50" type="text" name="token" placeholder="请输入 Token">
+                </div>
+                <div class="form-group">
                     <input type="submit" value="关闭">
                 </div>
             </form>

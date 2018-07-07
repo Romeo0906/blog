@@ -18,7 +18,6 @@ class PostsController extends Controller
      */
     public function index()
     {
-        //
         $posts = Post::with(['channel', 'tag'])->orderByDesc('id')->simplePaginate(10);
         return view('admin.post.index', ['posts' => $posts]);
     }
@@ -30,7 +29,6 @@ class PostsController extends Controller
      */
     public function create()
     {
-        //
         return view('admin.post.create');
     }
 
@@ -42,7 +40,6 @@ class PostsController extends Controller
      */
     public function store(Request $request)
     {
-        //
         $request->validate([
             'title' => 'required|string|unique:posts,title|max:255',
             'description' => 'required|string',
@@ -74,17 +71,6 @@ class PostsController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
      * Show the form for editing the specified resource.
      *
      * @param  Post  $post
@@ -92,7 +78,6 @@ class PostsController extends Controller
      */
     public function edit(Post $post)
     {
-        //
         return view('admin.post.edit', ['post' => $post]);
     }
 
@@ -105,7 +90,6 @@ class PostsController extends Controller
      */
     public function update(Request $request, Post $post)
     {
-        //
         $request->validate([
             'title' => [
                 'required',
@@ -147,7 +131,6 @@ class PostsController extends Controller
      */
     public function destroy(Post $post)
     {
-        //
         try {
             $post->postTag()->delete();
             $post->delete();

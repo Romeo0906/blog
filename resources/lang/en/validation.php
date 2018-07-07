@@ -111,7 +111,8 @@ return [
         ],
         'token' => [
             'required' => '请输入两步验证的 Token！',
-            'numeric' => 'Token 值不合法！'
+            'numeric' => 'Token 值输入有误！',
+            'digits_between' => 'Token 值输入有误！',
         ],
         'tag' => [
             'required' => '标签不能为空！',

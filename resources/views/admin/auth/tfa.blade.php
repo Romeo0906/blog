@@ -21,7 +21,6 @@
                         </ul>
                     @endif
                     <form method="post" action="{{ route('auth.tfa') }}">
-                        <input type="hidden" name="user" value="{{ $user }}">
                         @csrf
                         <div class="row uniform 50%">
                             <div class="12u$"><input type="text" name="token" id="token" placeholder="Authy Token" /></div>

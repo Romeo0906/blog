@@ -11,10 +11,13 @@
 |
 */
 
-Route::get('/admin/login', 'Admin\AuthController@index')->name('auth.index');
-Route::post('/admin/login', 'Admin\AuthController@login')->name('auth.login');
-Route::get('/admin/logout', 'Admin\AuthController@logout')->name('auth.logout');
-Route::post('/admin/tfa', 'Admin\AuthController@twoFactorAuth')->name('auth.tfa');
+Route::name('auth.')->namespace('Admin')->prefix('admin')->group(function () {
+    Route::get('/login', 'AuthController@index')->name('index');
+    Route::post('/login', 'AuthController@login')->name('login');
+    Route::get('/tfa', 'AuthController@redirectToIndex')->name('redirectToIndex');
+    Route::post('/tfa', 'AuthController@twoFactorAuth')->name('tfa');
+    Route::get('/logout', 'AuthController@logout')->name('logout');
+});
 
 Route::name('admin.')->middleware('auth:tfa')->namespace('Admin')->prefix('admin')->group(function () {
     Route::get('/', 'AdminController@index')->name('index');

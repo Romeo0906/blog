@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Auth;
 
 class TwoFactorAuthController extends Controller
 {
-    //
+    // Client of Authy
     protected $authClient;
 
     /**
@@ -31,15 +31,11 @@ class TwoFactorAuthController extends Controller
      */
     public function toggle(Request $request, $status)
     {
-        if ($status == 'on') {
-            $this->enable($request);
+        if (($status == 'on' && $this->enable($request)) || ($status == 'off' && $this->disable($request))) {
+            return redirect()->route('admin.settings')->withErrors('设置成功！');
         }
 
-        if ($status == 'off') {
-            $this->disable();
-        }
-
-        return redirect()->route('admin.settings');
+        return redirect()->route('admin.settings')->withErrors('Token 输入有误！');
     }
 
     /**
@@ -50,17 +46,17 @@ class TwoFactorAuthController extends Controller
      */
     public function enable(Request $request)
     {
-        $request->validate(['token' => ['required', 'numeric']]);
+        $request->validate(['token' => 'required|numeric|digits_between:6,10']);
 
         $user = Auth::user();
 
-        if ($user->authy_id != null && $this->validate($user->authy_id, $request->input('token'))) {
+        if ($user->authy_id != null && $this->auth($user->authy_id, $request->input('token'))) {
             $user->authy_enabled = 1;
             $user->verified = 1;
             return $user->save();
         }
 
-        if ($this->register($user) && $this->validate($user->authy_id, $request->input('token'))) {
+        if ($this->register($user) && $this->auth($user->authy_id, $request->input('token'))) {
             $user->authy_enabled = 1;
             $user->verified = 1;
             return $user->save();
@@ -72,14 +68,20 @@ class TwoFactorAuthController extends Controller
     /**
      * Disable two factor auth
      *
+     * @param Request $request
      * @return mixed
      */
-    public function disable()
+    public function disable(Request $request)
     {
+        $request->validate(['token' => 'required|numeric|digits_between:6,10']);
+
         $user = Auth::user();
-        $user->authy_enabled = 0;
-        $user->verified = 0;
-        return $user->save();
+
+        if ($this->auth($user->authy_id, $request->input('token'))) {
+            $user->authy_enabled = 0;
+            $user->verified = 0;
+            return $user->save();
+        }
     }
 
     /**
@@ -107,7 +109,7 @@ class TwoFactorAuthController extends Controller
      * @param $token
      * @return bool
      */
-    public function validate($authy_id, $token)
+    public function auth($authy_id, $token)
     {
         return $this->authClient->verifyToken($authy_id, $token)->ok();
     }
