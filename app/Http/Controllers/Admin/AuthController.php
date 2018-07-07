@@ -50,7 +50,7 @@ class AuthController extends Controller
      */
     public function login(Request $request)
     {
-        $this->revocation($request->input($this->username()));
+        $this->revokeAuthorization($request->input($this->username()));
 
         $this->validateLogin($request);
 
@@ -90,7 +90,7 @@ class AuthController extends Controller
         }
 
         if ($this->authClient->verifyToken($user->authy_id, $request->token)->ok()) {
-            $this->authorize($user->{$this->username()});
+            $this->grantAuthorization($user->{$this->username()});
             return $this->sendLoginResponse($request);
         }
 
@@ -110,34 +110,23 @@ class AuthController extends Controller
     }
 
     /**
-     * Get user's authy id by user name
-     *
-     * @param $username
-     * @return mixed
-     */
-    protected function getAuthyId($username)
-    {
-        return User::where($this->username(), $username)->value('authy_id');
-    }
-
-    /**
      * Authorize user to log in (add two factor auth credential)
      *
      * @param $username
      * @return mixed
      */
-    protected function authorize($username)
+    protected function grantAuthorization($username)
     {
         return User::where($this->username(), $username)->update(['verified' => 1]);
     }
 
     /**
-     * Unauthorize user to log out (remove two factor auth credential)
+     * Revoke user's authorization and log out (remove two factor auth credential)
      *
      * @param $username
      * @return mixed
      */
-    protected function revocation($username)
+    protected function revokeAuthorization($username)
     {
         return User::where($this->username(), $username)->update(['verified' => 0]);
     }
@@ -150,7 +139,7 @@ class AuthController extends Controller
      */
     public function logout(Request $request)
     {
-        $this->revocation($this->guard()->user()->{$this->username()});
+        $this->revokeAuthorization($this->guard()->user()->{$this->username()});
 
         $this->guard()->logout();
 
