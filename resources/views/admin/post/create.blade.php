@@ -50,7 +50,10 @@
                             </div>
                             <div class="12u$">
                                 <label for="content"></label>
-                                <textarea name="content" id="content" placeholder="内容" rows="12"></textarea>
+                                <div id="md-editor" style="width: 100%; !important;">
+                                    <textarea name="content" id="content" placeholder="内容"></textarea>
+                                </div>
+                                @include('markdown::encode',['editors'=>['md-editor']])
                             </div>
                         </div>
                         <br>
