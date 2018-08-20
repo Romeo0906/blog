@@ -15,7 +15,9 @@
                     <div style="clear: both;"></div>
                 </div>
             </header>
-            <p>{!! \LaraMall\Markdown\Facades\Markdown::html($post->content) !!}</p>
+            <div class="post-content">
+                {!! MarkdownEditor::parse($post->content) !!}
+            </div>
             <ul class="actions">
                 <li><a href="{{ route('home.posts.index') }}" class="button">返回列表</a></li>
             </ul>

@@ -59,7 +59,10 @@
                             </div>
                             <div class="12u$">
                                 <label for="content"></label>
-                                <textarea name="content" id="content" placeholder="内容" rows="12">{{ $post->content }}</textarea>
+                                <div id="md-editor">
+                                    <textarea name="content" id="content" placeholder="内容">{{ $post->content }}</textarea>
+                                </div>
+                                @include('markdown::encode',['editors'=>['md-editor']])
                             </div>
                         </div>
                         <br>

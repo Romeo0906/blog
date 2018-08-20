@@ -74,6 +74,10 @@ ul.error {
     color: #49bf9d;
 }
 
+.post-content img {
+    max-width: 100%;
+}
+
 .w-5 {
     width: 5% !important;
 }
