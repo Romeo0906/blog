@@ -27,7 +27,11 @@
             <tbody>
                 @foreach($posts as $post)
                     <tr>
-                        <td class="text-left">{{ $post->title }}</td>
+                        <td class="text-left">
+                            <a href="{{ route('home.posts.show', ['id' => $post->id]) }}" target="blank">
+                                {{ $post->title }}
+                            </a>
+                        </td>
                         <td>{{ $post->channel()->value('channel') }}</td>
                         <td>{{ $post->view }}</td>
                         <td>{{ date('m-d', strtotime($post->updated_at)) . ' / ' . date('m-d', strtotime($post->updated_at)) }}</td>

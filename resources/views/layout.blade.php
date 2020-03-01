@@ -47,7 +47,7 @@
                 <li><a href="mailto:zijian0906@gmail.com" class="icon fa-envelope-o"><span class="label">Email</span></a></li>
             </ul>
             <ul class="copyright">
-                <li>&copy; 2018 王子建</li><li>版面设计: <a href="http://html5up.net">HTML5 UP</a></li>
+                <li>&copy; 2020 Herman</li><li>版面设计: <a href="http://html5up.net">HTML5 UP</a></li>
             </ul>
         </div>
     </footer>

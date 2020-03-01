@@ -19,9 +19,9 @@
     <div class="inner">
         <a href="{{ route('home.index') }}" class="image avatar"><img src="{{ asset('images/avatar.jpg') }}" alt="" /></a>
         <h1>
-            <strong>王子建</strong><br />
+            <strong>Herman</strong><br />
             热爱焦糖瓜子的梦想家<br />
-            五迷，健身，有猫
+            五迷 健身 有猫
         </h1>
     </div>
     <div class="inner">
