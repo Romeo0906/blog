@@ -3,8 +3,8 @@ version: "3.6"
 services:
   nginx:
     build:
-      context: ./dockerfiles/nginx
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: ./dockerfiles/nginx/Dockerfile
       args:
         SERVERROOT: public
         SERVERNAME: blog.actini.wang
@@ -60,5 +60,5 @@ volumes:
   nginx-ssl:
     driver_opts:
       type: volume
-      device: /etc/nginx/ssl
+      device: /etc/letsencrypt
       o: bind
