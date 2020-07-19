@@ -1,0 +1,63 @@
+version: "3.6"
+
+services:
+  nginx:
+    build:
+      context: ./dockerfiles/nginx
+      dockerfile: Dockerfile
+      args:
+        SERVERROOT: public
+        SERVERNAME: blog.actini.wang
+    volumes:
+      - nginx-ssl:/etc/nginx/ssl
+    ports:
+      - "8000:80"
+    networks:
+      - frontend
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
+  mysql:
+    build:
+      context: ./dockerfiles/mysql
+      dockerfile: Dockerfile
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - backend
+    environment:
+      MYSQL_ROOT_PASSWORD: AoncEtwEmO
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
+  php-fpm:
+    build:
+      context: .
+      dockerfile: ./dockerfiles/phpfpm/Dockerfile
+    networks:
+      - frontend
+      - backend
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
+networks:
+  frontend:
+  backend:
+
+volumes:
+  mysql-data:
+    driver_opts:
+      type: volume
+      device: /var/lib/mysql
+      o: bind
+  nginx-ssl:
+    driver_opts:
+      type: volume
+      device: /etc/nginx/ssl
+      o: bind
